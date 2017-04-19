@@ -7,10 +7,10 @@ object MinimumBuild extends Build {
 
   val appName         = "iron-cache-plugin"
   val pluginVersion   = "1.0"
-  val buildVersion    = "2.3.0"
+  val buildVersion    = "2.5.0"
 
   val baseSettings = Defaults.defaultSettings ++ Seq(
-    scalaVersion := "2.10.0"
+    scalaVersion := "2.11.0"
   )
       
   val appDeps = Seq(
