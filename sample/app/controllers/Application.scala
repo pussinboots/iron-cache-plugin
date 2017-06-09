@@ -4,33 +4,35 @@ import play.api._
 import play.api.mvc._
 import play.api.Play.current
 import play.api.cache.Cache
-import com.github.tmwtmp100.cache.IronCachePlugin
+import com.github.tmwtmp100.cache.IronCacheApi
+import scala.concurrent.duration._
+import javax.inject.Inject
 
-object Application extends Controller {
+class Application @Inject() (ironPlugin: IronCacheApi) extends Controller {
 
-  private val ironPlugin = play.api.Play.current.plugin[IronCachePlugin].get
+  //private val ironPlugin = play.api.Play.current.plugin[IronCachePlugin].get
   
   def index = Action {
     Ok(views.html.index.render("Your new application is ready."))
   }
 
   def cacheSetExpiration(value: String) = Action {
-    Cache.set("test", value, 3600)
+    ironPlugin.set("test", value, Duration(60, MINUTES))
     Ok(value + " set.")
   }
 
   def cacheSetString(key: String, value: String) = Action {
-    Cache.set(key, value)
+    ironPlugin.set(key, value)
     Ok("Set " + key +  " to " + value)
   }
 
   def cacheSetInt(key: String, value: Int) = Action {
-    Cache.set(key, value)
+    ironPlugin.set(key, value)
     Ok("Set " + key + " to " + value)
   }
 
   def cacheGet() = Action {
-    Cache.get("test") match {
+    ironPlugin.get("test") match {
       case Some(value) => Ok("Cache value found: " + value)
       case None => Ok("Cache value not found")
     }
@@ -49,7 +51,7 @@ object Application extends Controller {
   }
 
   def cacheDelete() = Action {
-    Cache.remove("test")
+    ironPlugin.remove("test")
     Ok("Removed.")
   }
   
